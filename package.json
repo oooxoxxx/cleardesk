@@ -1,0 +1,9 @@
+{
+  "name": "cleardesk",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A local-first daily task and decision dashboard.",
+  "scripts": {
+    "build": "node scripts/build.mjs"
+  }
+}

@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f5f7f3" />
+    <meta name="description" content="ClearDesk：把今天理清楚。免登入、資料留在本機的日常待辦整理工具。" />
+    <title>ClearDesk｜把今天理清楚</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="主要導覽">
+        <div class="brand-row">
+          <a class="brand" href="#" aria-label="ClearDesk 首頁">
+            <span class="brand-mark"><span></span><span></span><span></span></span>
+            <span class="brand-name">ClearDesk</span>
+          </a>
+          <button class="icon-button mobile-close" id="closeSidebar" aria-label="關閉導覽">×</button>
+        </div>
+        <p class="brand-tagline">把今天理清楚。</p>
+
+        <button class="primary-button add-task-button" id="openAddTask">
+          <span class="plus-icon">＋</span>
+          <span>新增事項</span>
+          <kbd>N</kbd>
+        </button>
+
+        <nav class="nav-group" aria-label="時間視角">
+          <p class="nav-label">視角</p>
+          <button class="nav-item active" data-view="today"><span class="nav-icon">◷</span><span>今天</span><span class="nav-count" id="todayCount">0</span></button>
+          <button class="nav-item" data-view="week"><span class="nav-icon">▦</span><span>本週</span><span class="nav-count" id="weekCount">0</span></button>
+          <button class="nav-item" data-view="later"><span class="nav-icon">→</span><span>稍後</span><span class="nav-count" id="laterCount">0</span></button>
+          <button class="nav-item" data-view="inbox"><span class="nav-icon">⌂</span><span>收件匣</span><span class="nav-count" id="inboxCount">0</span></button>
+          <button class="nav-item" data-view="completed"><span class="nav-icon">✓</span><span>已完成</span><span class="nav-count" id="completedCount">0</span></button>
+        </nav>
+
+        <nav class="nav-group label-nav" aria-label="標籤">
+          <p class="nav-label">標籤</p>
+          <div id="tagList"></div>
+          <button class="tag-add" id="addTagButton"><span>＋</span> 管理標籤</button>
+        </nav>
+
+        <div class="sidebar-footer">
+          <div class="storage-note"><span class="status-dot"></span><span>資料只存在這部裝置</span></div>
+          <div class="footer-actions">
+            <button class="text-button" id="exportButton">匯出</button>
+            <button class="text-button" id="importButton">匯入</button>
+            <input id="importInput" type="file" accept="application/json" hidden />
+          </div>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <button class="icon-button menu-button" id="openSidebar" aria-label="開啟導覽">☰</button>
+          <div class="breadcrumbs"><span>我的工作區</span><span class="crumb-separator">/</span><strong id="viewTitle">今天</strong></div>
+          <div class="topbar-actions">
+            <span class="local-badge"><span class="status-dot"></span> Local-first</span>
+            <button class="icon-button" id="themeToggle" aria-label="切換主題" title="切換主題">◐</button>
+            <button class="avatar" aria-label="個人設定">你</button>
+          </div>
+        </header>
+
+        <div class="content-wrap">
+          <section class="hero-row">
+            <div>
+              <p class="eyebrow" id="dateLabel">週六，11 月 14 日</p>
+              <h1 id="greeting">早安，今天先做最重要的事。</h1>
+              <p class="hero-subtitle" id="heroSubtitle">把腦中的雜訊放下來，只留下一個下一步。</p>
+            </div>
+            <div class="progress-card">
+              <div class="progress-ring" id="progressRing"><span id="progressValue">0%</span></div>
+              <div><strong id="progressLabel">今天的節奏</strong><span id="progressCaption">從一件小事開始</span></div>
+            </div>
+          </section>
+
+          <section class="quick-add-card" aria-label="快速新增">
+            <div class="quick-add-icon">＋</div>
+            <input id="quickTitle" type="text" placeholder="先記下來，之後再整理……" autocomplete="off" />
+            <button class="quick-add-submit" id="quickAddSubmit">新增 <span>↵</span></button>
+          </section>
+
+          <section class="stat-strip" aria-label="工作摘要">
+            <div class="stat-item"><span class="stat-kicker">待處理</span><strong id="statOpen">0</strong><span class="stat-detail">件事項</span></div>
+            <div class="stat-item"><span class="stat-kicker">高優先</span><strong id="statPriority">0</strong><span class="stat-detail">需要留意</span></div>
+            <div class="stat-item"><span class="stat-kicker">即將到期</span><strong id="statDue">0</strong><span class="stat-detail">未來 7 天</span></div>
+            <div class="stat-item quote-stat"><span class="quote-mark">“</span><span>清楚，不代表<br />事情變少，而是知道先做什麼。</span></div>
+          </section>
+
+          <section class="tasks-section">
+            <div class="section-heading">
+              <div><h2 id="sectionTitle">今天</h2><span class="section-count" id="sectionCount">0 件待辦</span></div>
+              <button class="small-add-button" id="sectionAddButton"><span>＋</span> 新增</button>
+            </div>
+
+            <div class="toolbar">
+              <label class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="搜尋事項……" /><kbd>/</kbd></label>
+              <div class="filter-buttons">
+                <select id="priorityFilter" aria-label="依優先級篩選"><option value="all">所有優先級</option><option value="high">高優先</option><option value="medium">中優先</option><option value="low">低優先</option></select>
+                <select id="dueFilter" aria-label="依截止日期篩選"><option value="all">所有日期</option><option value="overdue">已逾期</option><option value="soon">7 天內</option><option value="none">未設定日期</option></select>
+                <button class="filter-icon-button" id="clearFilters" aria-label="清除篩選" title="清除篩選">↺</button>
+              </div>
+            </div>
+
+            <div id="taskGroups" class="task-groups"></div>
+            <div id="emptyState" class="empty-state" hidden>
+              <div class="empty-illustration"><span></span><span></span><span></span></div>
+              <h3 id="emptyTitle">這裡很安靜。</h3>
+              <p id="emptyText">先新增一件想完成的事，讓今天有一個清楚的起點。</p>
+              <button class="outline-button" id="emptyAddButton">新增第一件事</button>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <dialog class="task-dialog" id="taskDialog">
+      <form method="dialog" id="taskForm">
+        <div class="dialog-header"><div><p class="eyebrow">整理下一步</p><h2 id="dialogTitle">新增事項</h2></div><button class="icon-button" value="cancel" aria-label="關閉">×</button></div>
+        <label class="field-label">事項內容<input id="taskTitle" name="title" required maxlength="140" placeholder="例如：整理下週會議提案" /></label>
+        <div class="form-grid">
+          <label class="field-label">優先級<select id="taskPriority" name="priority"><option value="high">高優先</option><option value="medium" selected>中優先</option><option value="low">低優先</option></select></label>
+          <label class="field-label">截止日期<input id="taskDue" name="due" type="date" /></label>
+        </div>
+        <label class="field-label">標籤<span class="label-hint">用逗號分隔，可建立新標籤</span><input id="taskTags" name="tags" placeholder="工作, 個人" /></label>
+        <label class="field-label">備註<span class="label-hint">選填</span><textarea id="taskNotes" name="notes" rows="3" placeholder="補充背景或下一個具體動作……"></textarea></label>
+        <div class="dialog-actions"><button class="text-button" value="cancel">取消</button><button class="primary-button" id="saveTaskButton" value="default">儲存事項</button></div>
+      </form>
+    </dialog>
+
+    <dialog class="simple-dialog" id="tagDialog">
+      <form method="dialog" id="tagForm"><div class="dialog-header"><div><p class="eyebrow">保持清楚</p><h2>管理標籤</h2></div><button class="icon-button" value="cancel" aria-label="關閉">×</button></div><p class="dialog-description">標籤會從目前的事項自動整理，你可以在這裡刪除不再使用的標籤。</p><div id="tagManagerList" class="tag-manager-list"></div><div class="dialog-actions"><button class="primary-button" value="default">完成</button></div></form>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="./app.js"></script>
+  </body>
+</html>
